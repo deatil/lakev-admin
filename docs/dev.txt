@@ -1,0 +1,3 @@
+v run main.v
+
+v run .

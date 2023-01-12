@@ -1,0 +1,27 @@
+[app]
+app_name = "lakev-admin"
+version = "1.0.1"
+debug = true
+time_zone = "Asia/Hong_Kong"
+server_host = ""
+server_port = 8082
+
+[db]
+sqlite = "./db/lakev.sqlite"
+
+[session]
+save_handler = "file"
+save_path = "./runtime/session"
+cookie_cookie_name = "vid"
+cookie_lifetime = 0
+cookie_path = "/"
+cookie_domain = ""
+cookie_httponly = true
+cookie_samesite = "lax"
+gc_probability = 1
+gc_divisor = 1000
+gc_maxlifetime = 1440
+
+[log]
+log_file = "./runtime/log/lakev-{Y}-{m}-{d}.log"
+log_level = "error"
