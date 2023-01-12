@@ -3,6 +3,7 @@ module model
 import sqlite
 
 pub struct User {
+pub:
     id         int     [primary; sql: serial]
     username   string  [unique]
     password   string

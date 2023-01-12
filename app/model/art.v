@@ -3,6 +3,7 @@ module model
 import sqlite
 
 pub struct Art {
+pub:
     id       int    [primary; sql: serial]
     cate_id  int  
     user_id  int  

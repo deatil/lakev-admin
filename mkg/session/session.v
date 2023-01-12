@@ -1,5 +1,6 @@
 module session
 
+import time
 import net.http
 import mkg.cfg
 import mkg.vsession
@@ -11,11 +12,18 @@ pub fn start(cookie vsession.SessionCookie) {
     mut sess := session(cookie)
     
     conf := cfg.config()
+    
+    mut expires := time.Time{}
+    cookie_expires := conf.value('session.cookie_expires').int()
+    if cookie_expires > 0 {
+        expires = time.now().add_seconds(cookie_expires)
+    }
 
     mut vcookie := http.Cookie{
         path:      conf.value('session.cookie_path').string()
         domain:    conf.value('session.cookie_domain').string()
         http_only: conf.value('session.cookie_httponly').bool()
+        expires:   expires
         max_age:   conf.value('session.cookie_lifetime').int()
         same_site: vsession.get_same_site_mode(conf.value('session.cookie_samesite').string())
     }

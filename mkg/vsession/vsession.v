@@ -1,5 +1,6 @@
 module vsession
 
+import rand
 import net.http
 import mkg.utils
 
@@ -79,6 +80,7 @@ pub fn new_session() &Session {
 // 启动
 pub fn (mut s Session) start(mut cookie http.Cookie) {
     session_id := s.get_session_id()
+    
     if session_id == '' {
         cookie.name = s.get_cookie_name()
         cookie.value = s.generate_session_id()
@@ -176,10 +178,7 @@ fn (s Session) get_session_id() string {
 
 // 生成 session_id
 fn (s Session) generate_session_id() string {
-    utils.set_rand_crypto_safe_seed()
-    
-    mut id := utils.generate_salt()
-    id = utils.sha256(id)
+    id := utils.md5(rand.uuid_v4())
     
     return id
 }

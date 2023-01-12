@@ -9,7 +9,7 @@ const (
 )
 
 // 时间处理
-struct Time {
+pub struct Time {
     t time.Time
 }
 

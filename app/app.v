@@ -18,8 +18,8 @@ mut:
     debug    bool [vweb_global]
 }
 
-pub fn (app App) before_request() {
-    // 添加 session
+pub fn (mut app App) before_request() {
+    // 开启 session
     session.start(app)
 
     println('[vweb] before_request: ${app.req.method} ${app.req.url}')
@@ -39,32 +39,4 @@ pub fn new_app() &App {
     app.debug    = conf.value('app.debug').bool()
 
     return app
-}
-
-struct ResultJson {
-    code    int 
-    message string
-    data    string
-}
-
-pub fn (mut app App) return_json(code int, message string, data string) vweb.Result {
-    res := ResultJson{
-        code:    code 
-        message: message
-        data:    data
-    }
-
-    return app.json(res)
-}
-
-// 是否登录
-pub fn (mut app App) is_login() bool {
-    mut sess := session.session(app)
-    
-    userid := sess.get('userid')
-    if userid == '' {
-        return false
-    }
-    
-    return true
 }

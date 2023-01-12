@@ -15,10 +15,12 @@ fn main() {
     app.serve_static('/favicon.ico', 'public/favicon.ico')
     os.chdir(os.dir(os.executable()))!
     app.handle_static('public/assets', true)
+    
+    conf := cfg.config()
 
     // 运行信息
-    host := cfg.config().value('app.server_host').string()
-    port := cfg.config().value('app.server_port').int()
+    host := conf.value('app.server_host').string()
+    port := conf.value('app.server_port').int()
     
     vweb.run_at(app, vweb.RunParams{
         host: host

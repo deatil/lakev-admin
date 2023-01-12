@@ -33,7 +33,7 @@ git clone https://github.com/deatil/lakev-admin
 3. 运行测试
 
 ```
-go run .
+v run .
 ```
 
 4. 后台登录账号及密码：`admin` / `123456`, 后台地址: `/admin/index`

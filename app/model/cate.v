@@ -3,6 +3,7 @@ module model
 import sqlite
 
 pub struct Cate {
+pub:
     id       int    [primary; sql: serial]
     name     string  
     slug     string [unique]

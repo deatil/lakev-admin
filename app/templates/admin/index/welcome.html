@@ -2,7 +2,7 @@
 <html class="x-admin-sm">
     <head>
         <meta charset="UTF-8">
-        <title>欢迎页面 - @app_name</title>
+        <title>欢迎页面 - @app.app_name()</title>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -18,7 +18,7 @@
                     <div class="layui-card">
                         <div class="layui-card-body ">
                             <blockquote class="layui-elem-quote">欢迎管理员：
-                                <span class="x-red">test</span>！当前时间:2018-04-25 20:50:53
+                                <span class="x-red">@app.user_info().nickname</span>！当前时间:@app.now_time().to_date_time_string()
                             </blockquote>
                         </div>
                     </div>
@@ -77,13 +77,12 @@
                                         <td>Apache/2.4.23 (Win32) OpenSSL/1.0.2j mod_fcgid/2.3.9</td></tr>
                                     <tr>
                                         <th>PHP版本</th>
-                                        <td>5.6.27</td></tr>
-                                    <tr>
-                                        <th>PHP运行方式</th>
-                                        <td>cgi-fcgi</td></tr>
+                                        <td>5.6.27</td>
+                                    </tr>
                                     <tr>
                                         <th>MYSQL版本</th>
-                                        <td>5.5.53</td></tr>
+                                        <td>5.5.53</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

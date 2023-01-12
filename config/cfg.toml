@@ -6,14 +6,18 @@ time_zone = "Asia/Hong_Kong"
 server_host = ""
 server_port = 8082
 
+[auth]
+salt = "lakev-admin-auth-salt"
+
 [db]
 sqlite = "./db/lakev.sqlite"
 
 [session]
 save_handler = "file"
 save_path = "./runtime/session"
-cookie_cookie_name = "vid"
-cookie_lifetime = 0
+cookie_cookie_name = "sid"
+cookie_lifetime = -1
+cookie_expires = 0
 cookie_path = "/"
 cookie_domain = ""
 cookie_httponly = true
