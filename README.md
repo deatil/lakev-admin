@@ -7,7 +7,7 @@ lakev-admin 是使用 vweb 和 sqlite 的 vlang 后台管理系统
 
 *  使用 `vlang` 语言开发的通用后台管理系统
 *  核心使用 vweb 及 sqlite 等开发
-*  模板使用 `X-admin` 后台目标开发
+*  模板使用 `X-admin` 后台目标开发，非前后端分离
 
 
 ### 环境要求
