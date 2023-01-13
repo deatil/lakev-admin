@@ -6,6 +6,8 @@ import crypto.sha1
 import crypto.sha256
 import crypto.sha512
 
+// os.getenv()
+
 // md5
 pub fn md5(s string) string {
     data := md5.sum(s.bytes()).hex().str()

@@ -1,6 +1,7 @@
 module model
 
 import sqlite
+import mkg.time
 
 pub struct Art {
 pub:
@@ -18,6 +19,13 @@ pub:
     status   int
     add_time i64
     add_ip   string
+}
+
+// 格式化时间
+pub fn (art Art) format_date() string {
+    t := time.from_unix(art.add_time)
+    
+    return t.to_date_time_string()
 }
 
 // 更改基础信息
@@ -54,13 +62,60 @@ pub fn get_art_by_id(db sqlite.DB, id int) Art {
     return data
 }
 
+// 获取全部
+pub fn find_all_art(db sqlite.DB) ([]Art, int) {
+    data := sql db {
+        select from Art order by add_time desc
+    }
+    
+    count := sql db {
+        select count from Art
+    }
+    
+    return data, count
+}
+
 // 获取
-pub fn find_art_by_status(db sqlite.DB, status bool) []Art {
+pub fn find_all_art_page(db sqlite.DB, page_num int, num_per int) ([]Art, int) {
+    offs := page_num * num_per
+    
+    data := sql db { 
+        select from Art order by add_time desc limit num_per offset offs 
+    }
+    
+    count := sql db {
+        select count from Art
+    }
+    
+    return data, count
+}
+
+// 获取
+pub fn find_art_by_status(db sqlite.DB, status bool) ([]Art, int) {
     data := sql db {
         select from Art where status == status order by add_time desc
     }
     
-    return data
+    count := sql db {
+        select count from Art where status == status
+    }
+    
+    return data, count
+}
+
+// 获取
+pub fn find_art_page_by_status(db sqlite.DB, page_num int, num_per int, status bool) ([]Art, int) {
+    offs := page_num * num_per
+    
+    data := sql db { 
+        select from Art where status == status order by add_time desc limit num_per offset offs 
+    }
+    
+    count := sql db {
+        select count from Art where status == status
+    }
+    
+    return data, count
 }
 
 // 获取数量

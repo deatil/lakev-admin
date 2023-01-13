@@ -15,14 +15,15 @@ pub mut:
 mut:
     app_name string [vweb_global]
     version  string [vweb_global]
-    debug    bool [vweb_global]
+    debug    bool   [vweb_global]
+    pagesize int    [vweb_global]
 }
 
 pub fn (mut app App) before_request() {
     // 开启 session
     session.start(app)
 
-    println('[vweb] before_request: ${app.req.method} ${app.req.url}')
+    println('[lakev-admin] before_request: ${app.req.method} ${app.req.url}')
 }
 
 // 实例化
@@ -37,6 +38,7 @@ pub fn new_app() &App {
     app.app_name = conf.value('app.app_name').string()
     app.version  = conf.value('app.version').string()
     app.debug    = conf.value('app.debug').bool()
+    app.pagesize = conf.value('app.pagesize').int()
 
     return app
 }

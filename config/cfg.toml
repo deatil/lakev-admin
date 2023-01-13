@@ -3,6 +3,7 @@ app_name = "lakev-admin"
 version = "1.0.1"
 debug = true
 time_zone = "Asia/Hong_Kong"
+pagesize = 10
 server_host = ""
 server_port = 8082
 

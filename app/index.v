@@ -5,10 +5,6 @@ import mkg.time
 
 ['/'; get]
 pub fn (mut app App) index() vweb.Result {
-    show := true
-    hello := 'Hello world from vweb'
-    numbers := [1, 2, 3]
-    
     datetime := time.parse('2022-12-05 12:13:45').to_date_time_string()
     println(datetime)
     

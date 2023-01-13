@@ -4,11 +4,15 @@ import os
 import vweb
 import mkg.cfg
 import mkg.log
+import mkg.pkg.vdotenv
 import app
 
 fn main() {
     // 打印信息
     print_info()
+    
+    // 加载 env
+    vdotenv.over_load()
     
     // 运行
     mut app := app.new_app()
