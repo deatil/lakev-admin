@@ -30,3 +30,11 @@ gc_maxlifetime = 1440
 [log]
 log_file = "./runtime/log/lakev-{Y}-{m}-{d}.log"
 log_level = "error"
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+db = 0
+password = "admin123"
+read_timeout = 30
+write_timeout = 30
