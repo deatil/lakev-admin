@@ -19,6 +19,6 @@ pub fn (mut s SessionStoreEmpty) set(key string, value map[string]string) {
 }
 
 // 回收过期数据
-pub fn (s SessionStoreEmpty) gc(max_lifetime i64) {
+pub fn (s SessionStoreEmpty) gc() {
 
 }

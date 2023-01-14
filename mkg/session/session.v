@@ -41,11 +41,13 @@ pub fn session(cookie vsession.SessionCookie) &vsession.Session {
     sess.cookie = cookie
     sess.store = conf.value('session.save_handler').string()
     
-    mut store_file := vsession.new_session_store_file()
-    store_file.save_path = conf.value('session.save_path').string()
-    store_file.gc_probability = conf.value('session.gc_probability').i64()
-    store_file.gc_divisor = conf.value('session.gc_divisor').i64()
+    // 文件
+    mut store_file := vsession.new_session_store_file(conf)
     sess.register_store('file', mut store_file)
+    
+    // redis
+    mut store_redis := vsession.new_session_store_redis(conf)
+    sess.register_store('redis', mut store_redis)
     
     return sess
 }

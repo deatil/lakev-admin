@@ -1,38 +1,46 @@
 module vsession
 
 import os
+import toml
 import time
 import rand
 import json
 import mkg.log
 import mkg.time as lakev_time
 
-const default_save_path = './tmp'
-
 // 存储数据
-struct SessionData {
+pub struct SessionData {
     time i64
     data map[string]string
 }
 
 // 文件存储
 pub struct SessionStoreFile {
-pub mut:
-    save_path      string
-    gc_probability i64
-    gc_divisor     i64
+mut:
+    save_path      string = './tmp'
+    gc_probability i64    = 1
+    gc_divisor     i64    = 1000
+    gc_maxlifetime i64    = 1440
 }
 
 // 构造函数
-pub fn new_session_store_file() &SessionStoreFile {
+pub fn new_session_store_file(conf toml.Doc) &SessionStoreFile {
+    save_path      := conf.value('session.file_save_path').string()
+    gc_probability := conf.value('session.gc_probability').i64()
+    gc_divisor     := conf.value('session.gc_divisor').i64()
+    gc_maxlifetime := conf.value('session.gc_maxlifetime').i64()
+
     mut store := &SessionStoreFile{
-        save_path: default_save_path
+        save_path:      save_path,
+        gc_probability: gc_probability,
+        gc_divisor:     gc_divisor,
+        gc_maxlifetime: gc_maxlifetime,
     }
     
     return store
 }
 
-pub fn (s SessionStoreFile) get(key string) map[string]string {
+pub fn (mut s SessionStoreFile) get(key string) map[string]string {
     res := s.get_file(key)
 
     return res.data
@@ -60,10 +68,10 @@ pub fn (mut s SessionStoreFile) set(key string, value map[string]string) {
 }
 
 // 回收过期数据
-pub fn (s SessionStoreFile) gc(max_lifetime i64) {
+pub fn (s SessionStoreFile) gc() {
     value := rand.i64_in_range(i64(1), s.gc_divisor) or { i64(1) }
     if s.gc_probability >= value {
-        task := go s.session_gc(max_lifetime)
+        task := go s.session_gc(s.gc_maxlifetime)
         task.wait()  or {}
     }
 }

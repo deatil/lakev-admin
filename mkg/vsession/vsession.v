@@ -8,14 +8,13 @@ const default_cookie_name = 'vid'
 
 // 存储接口
 pub interface SessionStore {
+    // 回收
+    gc()
+mut:
     // 获取
     get(key string) map[string]string
-mut:
     // 设置
     set(key string, value map[string]string)
-    
-    // 回收
-    gc(max_lifetime i64)
 }
 
 // Cookie接口
@@ -94,8 +93,10 @@ pub fn (mut s Session) get(key string) string {
     if session_id == '' {
         return ''
     }
+    
+    mut store := s.get_store()
 
-    store_data := s.get_store().get(session_id)
+    store_data := store.get(session_id)
     
     data := store_data[key] or { '' }
     
@@ -111,10 +112,11 @@ pub fn (mut s Session) set(key string, value string) {
         return
     }
     
-    mut store_data := s.get_store().get(session_id)
+    mut store := s.get_store()
+    
+    mut store_data := store.get(session_id)
     store_data[key] = value
 
-    mut store := s.get_store()
     store.set(session_id, store_data)
 }
 
@@ -124,10 +126,11 @@ pub fn (mut s Session) delete(key string) {
         return
     }
     
-    mut store_data := s.get_store().get(session_id)
+    mut store := s.get_store()
+    
+    mut store_data := store.get(session_id)
     store_data.delete(key)
 
-    mut store := s.get_store()
     store.set(session_id, store_data)
 }
 
@@ -135,7 +138,7 @@ pub fn (mut s Session) delete(key string) {
 fn (mut s Session) gc() {
     mut store := s.get_store()
     
-    store.gc(s.gc_maxlifetime)
+    store.gc()
 }
 
 // 注册存储方式

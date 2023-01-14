@@ -14,8 +14,7 @@ salt = "lakev-admin-auth-salt"
 sqlite = "./db/lakev.sqlite"
 
 [session]
-save_handler = "file"
-save_path = "./runtime/session"
+save_handler = "file" # file | redis
 cookie_cookie_name = "sid"
 cookie_lifetime = -1
 cookie_expires = 0
@@ -26,6 +25,14 @@ cookie_samesite = "lax"
 gc_probability = 1
 gc_divisor = 1000
 gc_maxlifetime = 1440
+file_save_path = "./runtime/session"
+redis_host = "127.0.0.1"
+redis_port = 6379
+redis_db = 5
+redis_password = "admin123"
+redis_read_timeout = 30
+redis_write_timeout = 30
+redis_prefix = "lakev-cookie"
 
 [log]
 log_file = "./runtime/log/lakev-{Y}-{m}-{d}.log"

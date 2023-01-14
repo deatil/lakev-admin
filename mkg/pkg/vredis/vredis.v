@@ -65,20 +65,33 @@ fn (mut r Redis) redis_transaction(message string) !string {
     return r.socket.read_line()
 }
 
+// cmd 自定义命令
+pub fn (mut r Redis) cmd(cmd string) !string {
+    return r.redis_transaction('$cmd\r\n')
+}
+
 pub fn (mut r Redis) set_db(db int) !bool {
     res := r.redis_transaction('select "$db"\r\n') or { 
         return error('set db error')
     }
     
-    return res.starts_with('+OK')
+    if res.starts_with('+OK') {
+        return true
+    }
+    
+    return error(res)
 }
 
 pub fn (mut r Redis) set_password(password string) !bool {
     res := r.redis_transaction('auth "$password"\r\n') or { 
-        return error('set password error')
+        return err
     }
     
-    return res.starts_with('+OK')
+    if res.starts_with('+OK') {
+        return true
+    }
+    
+    return error(res)
 }
 
 pub fn (mut r Redis) disconnect() {
@@ -87,10 +100,14 @@ pub fn (mut r Redis) disconnect() {
 
 pub fn (mut r Redis) set(key string, value string) !bool {
     res := r.redis_transaction('SET "$key" "$value"\r\n') or { 
-        return error('set error')
+        return err
     }
     
-    return res.starts_with('+OK')
+    if res.starts_with('+OK') {
+        return true
+    }
+    
+    return error(res)
 }
 
 pub fn (mut r Redis) set_opts(key string, value string, opts SetOpts) !bool  {
@@ -113,10 +130,14 @@ pub fn (mut r Redis) set_opts(key string, value string, opts SetOpts) !bool  {
     keep_ttl := if opts.keep_ttl == false { '' } else { ' KEEPTTL' }
     
     res := r.redis_transaction('SET "$key" "$value"$ex$nx$keep_ttl\r\n') or { 
-        return error('set opts error')
+        return err
     }
     
-    return res.starts_with('+OK')
+    if res.starts_with('+OK') {
+        return true
+    }
+    
+    return error(res)
 }
 
 pub fn (mut r Redis) setex(key string, seconds int, value string) !bool {
@@ -228,6 +249,7 @@ pub fn (mut r Redis) get(key string) !string {
     if len == -1 {
         return error('key not found')
     }
+    
     return r.socket.read_line()[0..len]
 }
 

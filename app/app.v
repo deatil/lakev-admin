@@ -23,7 +23,9 @@ pub fn (mut app App) before_request() {
     // 开启 session
     session.start(app)
 
-    println('[lakev-admin] request: ${app.req.method} ${app.req.url}')
+    if app.debug {
+        println('[lakev-admin] request: ${app.req.method} ${app.req.url}')
+    }
 }
 
 // 实例化
