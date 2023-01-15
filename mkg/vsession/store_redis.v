@@ -6,6 +6,7 @@ import time
 import net.urllib
 import mkg.log
 import mkg.pkg.vredis
+import mkg.time as lakev_time
 
 // redis 存储
 pub struct SessionStoreRedis {
@@ -49,17 +50,24 @@ pub fn (mut s SessionStoreRedis) get(key string) map[string]string {
     payload := s.redis.get(new_key) or { '' }
     escape_payload := urllib.query_unescape(payload) or { '' }
 
-    res := json.decode(map[string]string, escape_payload) or { 
+    res := json.decode(SessionData, escape_payload) or { 
         return map[string]string{} 
     }
 
-    return res
+    return res.data
 }
 
 pub fn (mut s SessionStoreRedis) set(key string, value map[string]string) {
     new_key := '${s.prefix}:$key' 
     
-    encoded := json.encode(value)
+    time_unix := lakev_time.now().to_time().unix
+
+    mut data := SessionData{
+        time: time_unix
+        data: value
+    }
+    
+    encoded := json.encode(data)
     escape_encoded := urllib.query_escape(encoded)
 
     s.redis.set(new_key, escape_encoded) or {

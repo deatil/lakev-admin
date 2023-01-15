@@ -1,8 +1,10 @@
 module vsession
 
 import rand
+import time
 import net.http
 import mkg.utils
+import mkg.time as lakev_time
 
 const default_cookie_name = 'vid'
 
@@ -22,6 +24,12 @@ pub interface SessionCookie {
     get_cookie(key string) !string
 mut:
     set_cookie(cookie http.Cookie)
+}
+
+// 存储数据
+pub struct SessionData {
+    time i64
+    data map[string]string
 }
 
 /*
@@ -56,11 +64,8 @@ pub mut:
     // 最大存活时间
     gc_maxlifetime i64
     
-    // 存储方式名称
-    store string
-    
-    // 注册的列表
-    stores map[string]SessionStore
+    // 存储方式
+    store SessionStore
     
     // cookie
     cookie SessionCookie
@@ -70,6 +75,7 @@ pub mut:
 pub fn new_session() &Session {
     mut sess := &Session{
         cookie: &SessionCookieEmpty{}
+        store:  &SessionStoreFile{}
         cookie_name: default_cookie_name
     }
     
@@ -141,18 +147,14 @@ fn (mut s Session) gc() {
     store.gc()
 }
 
-// 注册存储方式
-pub fn (mut s Session) register_store(name string, mut provider SessionStore) {
-    s.stores[name] = provider
+// 设置存储方式
+pub fn (mut s Session) set_store(mut store SessionStore) {
+    s.store = store
 }
 
 // 获取存储方式
 fn (mut s Session) get_store() SessionStore {
-    if s.store in s.stores {
-        return s.stores[s.store]
-    }
-    
-    return &SessionStoreEmpty{}
+    return s.store
 }
 
 // 设置 cookie 名称
@@ -204,4 +206,29 @@ pub fn (s SessionCookieEmpty) get_cookie(key string) !string {
 }
 
 pub fn (mut s SessionCookieEmpty) set_cookie(cookie http.Cookie) {
+}
+
+// SessionGCData
+pub struct SessionGCData {
+    name string
+    data SessionData
+}
+
+// 数据回收
+pub fn list_gc(matches []SessionGCData, max_lifetime i64, delete_fn fn(string)) {
+    now_time := lakev_time.now().to_time()
+    max_lifetime_duration := time.Duration(max_lifetime * time.second)
+    
+    for _, v in matches {
+        key := v.name
+        data := v.data
+    
+        data_time := lakev_time.from_unix(data.time).to_time()
+        data_time2 := data_time.add(max_lifetime_duration)
+        
+        // 添加时间后超过当前时间删除
+        if now_time.unix > data_time2.unix {
+            delete_fn(key)
+        }
+    }
 }

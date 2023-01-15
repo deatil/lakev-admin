@@ -39,15 +39,16 @@ pub fn session(cookie vsession.SessionCookie) &vsession.Session {
     sess.cookie_name = conf.value('session.cookie_cookie_name').string()
     sess.gc_maxlifetime = conf.value('session.gc_maxlifetime').i64()
     sess.cookie = cookie
-    sess.store = conf.value('session.save_handler').string()
     
-    // 文件
-    mut store_file := vsession.new_session_store_file(conf)
-    sess.register_store('file', mut store_file)
+    store := conf.value('session.save_handler').string()
     
-    // redis
-    mut store_redis := vsession.new_session_store_redis(conf)
-    sess.register_store('redis', mut store_redis)
+    if store == 'file' {
+        mut store_handler := vsession.new_session_store_file(conf)
+        sess.set_store(mut store_handler)
+    } else if store == 'redis' {
+        mut store_handler := vsession.new_session_store_redis(conf)
+        sess.set_store(mut store_handler)
+    }
     
     return sess
 }
