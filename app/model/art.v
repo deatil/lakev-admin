@@ -29,6 +29,21 @@ pub fn (art Art) format_date() string {
 }
 
 // 更改基础信息
+pub fn updata_art(db sqlite.DB, id int, art Art) {
+    sql db {
+        update Art set cate_id = art.cate_id, 
+            title = art.title, 
+            keywords = art.keywords, 
+            desc = art.desc, 
+            content = art.content, 
+            cover = art.cover, 
+            tags = art.tags, 
+            from = art.from, 
+            status = art.status where id == id
+    }
+}
+
+// 更改基础信息
 pub fn updata_art_by_id(db sqlite.DB, id int, title string, keywords string, desc string, content string) {
     sql db {
         update Art set title = title, keywords = keywords, desc = desc, content = content where id == id
@@ -63,16 +78,12 @@ pub fn get_art_by_id(db sqlite.DB, id int) Art {
 }
 
 // 获取全部
-pub fn find_all_art(db sqlite.DB) ([]Art, int) {
+pub fn find_all_art(db sqlite.DB) []Art {
     data := sql db {
         select from Art order by add_time desc
     }
     
-    count := sql db {
-        select count from Art
-    }
-    
-    return data, count
+    return data
 }
 
 // 获取

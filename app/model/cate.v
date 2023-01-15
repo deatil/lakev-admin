@@ -69,16 +69,12 @@ pub fn get_cate_by_slug(db sqlite.DB, slug string) Cate {
 }
 
 // 获取全部
-pub fn find_all_cate(db sqlite.DB) ([]Cate, int) {
+pub fn find_all_cate(db sqlite.DB) []Cate {
     data := sql db {
         select from Cate order by add_time desc
     }
     
-    count := sql db {
-        select count from Cate
-    }
-    
-    return data, count
+    return data
 }
 
 // 获取

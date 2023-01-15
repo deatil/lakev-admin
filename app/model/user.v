@@ -6,7 +6,7 @@ import mkg.time
 pub struct User {
 pub:
     id         int     [primary; sql: serial]
-    username   string  [unique]
+    username   string
     password   string
     nickname   string
     avatar     string
@@ -20,6 +20,13 @@ pub fn (user User) format_date() string {
     t := time.from_unix(user.add_time)
     
     return t.to_date_time_string()
+}
+
+// 更改信息
+pub fn updata_user(db sqlite.DB, user_id int, username string, nickname string, pass string, status int) {
+    sql db {
+        update User set username = username, nickname = nickname, password = pass, status = status where id == user_id
+    }
 }
 
 // 更改信息
@@ -73,16 +80,12 @@ pub fn get_user_by_username(db sqlite.DB, name string) User {
 }
 
 // 获取全部
-pub fn find_all_user(db sqlite.DB) ([]User, int) {
+pub fn find_all_user(db sqlite.DB) []User {
     data := sql db {
         select from User order by add_time desc
     }
     
-    count := sql db {
-        select count from User
-    }
-    
-    return data, count
+    return data
 }
 
 // 获取
